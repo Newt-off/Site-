@@ -188,6 +188,16 @@ body.cursor-text .cursor-follower {
   opacity: 0;
 }
 
+body.site-loaded a,
+body.site-loaded button,
+body.site-loaded [role="button"],
+body.site-loaded input,
+body.site-loaded textarea,
+body.site-loaded select,
+body.site-loaded label {
+  cursor: none !important;
+}
+
 a:hover { cursor: none; }
 
 /* Touch devices: restore normal cursor */
