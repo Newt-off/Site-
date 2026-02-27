@@ -30,7 +30,6 @@
       <li><a href="#about" class="nav-link" data-section="about">Profil</a></li>
       <li><a href="#stats" class="nav-link" data-section="stats">Stats</a></li>
       <li><a href="#career" class="nav-link" data-section="career">Carrière</a></li>
-      <li><a href="#performances" class="nav-link" data-section="performances">Performances</a></li>
       <li class="nav-dropdown">
         <button class="nav-link nav-more-btn">Plus <i class="fa-solid fa-chevron-down nav-chevron"></i></button>
         <div class="nav-dropdown-menu">
@@ -53,7 +52,6 @@
       <li><a href="#hero" class="mobile-link">Accueil</a></li>
       <li><a href="#about" class="mobile-link">Profil</a></li>
       <li><a href="#stats" class="mobile-link">Stats</a></li>
-      <li><a href="#performances" class="mobile-link">Performances</a></li>
       <li><a href="#videos" class="mobile-link">Vidéos</a></li>
       <li><a href="#career" class="mobile-link">Carrière</a></li>
       <li><a href="#social" class="mobile-link">Réseaux</a></li>
@@ -302,27 +300,6 @@
           <i class="fa-solid fa-chart-line"></i> Voir mon tracker complet
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="performances-section" id="performances">
-    <div class="container">
-      <div class="section-header reveal-up">
-        <span class="section-num">03</span>
-        <h2 class="section-title">Meilleures <em>Performances</em></h2>
-        <div class="section-line"></div>
-      </div>
-      <div class="performances-grid">
-        <div class="perf-card reveal-up" data-delay="0">
-          <div class="perf-soon">Soon</div>
-        </div>
-        <div class="perf-card reveal-up" data-delay="150">
-          <div class="perf-soon">Soon</div>
-        </div>
-        <div class="perf-card reveal-up" data-delay="300">
-          <div class="perf-soon">Soon</div>
-        </div>
       </div>
     </div>
   </section>
@@ -796,12 +773,13 @@
       const card2 = document.getElementById('ytCard2');
 
       const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${YT_CHANNEL_ID}`;
+      const t = Date.now(); // anti-cache
 
       // On essaie plusieurs proxies en cascade
       const proxies = [
-        `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=2`,
-        `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
+        `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}&t=${t}`,
+        `https://corsproxy.io/?${encodeURIComponent(rssUrl)}&_t=${t}`,
+        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=2&_=${t}`
       ];
 
       let videos = [];
@@ -836,7 +814,7 @@
       // corsproxy.io renvoie du texte, pas du JSON — on retente en .text()
       if (videos.length === 0) {
         try {
-          const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(rssUrl)}`);
+          const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(rssUrl)}&_t=${t}`);
           const text = await res.text();
           videos = parseRSS(text);
         } catch(e) {}
